@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="bac">
+            <div class="top">
+                <div class="line" id="00" onclick="draw('00')"></div>
+                <div class="line" id="01" onclick="draw('01')"></div>
+                <div class="line" id="02" onclick="draw('02')"></div>
+            </div>
+            <div class="center">
+                <div class="line" id="10" onclick="draw('10')"></div>
+                <div class="line" id="11" onclick="draw('11')"></div>
+                <div class="line" id="12" onclick="draw('12')"></div>
+            </div>
+            <div class="bottom">
+                <div class="line" id="20" onclick="draw('20')"></div>
+                <div class="line" id="21" onclick="draw('21')"></div>
+                <div class="line" id="22" onclick="draw('22')"></div>
+            </div>
+        </div>
+
+        <script>
+            var result="'X' won";
+            var win=false;
+            var chance= Math.floor((Math.random() * 2) + 1) - 1;
+            var x=1,y=1,ety=9;
+            var mat = new Array(3);
+            var singlePlayer=true;
+            for(i=0;i<mat.length;i++){
+                mat[i] = new Array(3);
+                for(j=0;j<3;j++){
+                    mat[i][j]='ety';
+                }
+            }
+            console.log("chance : ", chance);
+            if (!window.confirm("Do you want to play with bot?")) {
+                singlePlayer = false;
+            }
+            else if(chance==1){
+                masterMind();
+                ety--;
+                console.log("ety = "+ety);
+                chance = 0;
+            } 
+
+                function draw(getid){
+                    console.log(getid);
+                    if (!document.getElementById(getid).innerHTML && !win){
+                        if(chance==0){
+                            x = getid[0];
+                            y = getid[1];
+                            document.getElementById(getid).innerHTML = '<div id="circle"></div>';
+                            mat[x][y]='z';
+                            ety--;                            
+                            console.log("ety = " + ety);
+                            chance=1;
+                        } else if(!singlePlayer){
+                            x = getid[0];
+                            y = getid[1];
+                            document.getElementById(getid).innerHTML = '<div id="cross"></div>';
+                            mat[x][y] = 'c';
+                            chance = 0;
+                        }
+                        
+                        check();
+
+                        if(singlePlayer){
+                            if (!win) {
+                                masterMind();
+                                ety--;
+                                console.log("ety = "+ ety);
+                                chance = 0;
+                            }
+                        }
+                        
+                        check();
+                        console.log(mat[x][y],getid[0]);
+                    }
+                    if (won()) {
+                        setTimeout(() => {
+                            window.alert(result + " the match.");
+                            window.location.reload();
+                        }, 2500);
+                    }
+                }
+
+            function getRandom(){
+                x = Math.floor((Math.random() * 3) + 1)-1;
+                y = Math.floor((Math.random() * 3) + 1) - 1;
+                if (mat[x][y] != 'ety') {
+                    getRandom();
+                }
+                console.log(x,y);
+            }
+
+            function drawRandom() {
+                    getRandom(); 
+                    if (!document.getElementById("" + x + "" + y).innerHTML) {
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }else drawRandom();
+            }
+
+            function masterMind(){
+                if (ety <= 7) {
+                    //  [00]
+                    if(mat[0][0]=='ety' && mat[0][1] != 'ety' && mat[0][1] == mat[0][2]){
+                        x = 0; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }else if (mat[0][0] == 'ety' && mat[1][0] != 'ety'&& mat[1][0] == mat[2][0]) {
+                        x = 0; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }else if (mat[0][0] == 'ety' && mat[1][1] != 'ety' && mat[1][1] == mat[2][2]) {
+                        x = 0; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }
+                    // [01]
+                    else if (mat[0][1] == 'ety' && mat[0][0] != 'ety'&& mat[0][0] == mat[0][2]) {
+                        x = 0; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[0][1] == 'ety' && mat[1][1] != 'ety'&& mat[1][1] == mat[2][1]) {
+                        x = 0; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } 
+                    // [02]
+                    else if (mat[0][2] == 'ety' && mat[0][0] != 'ety' && mat[0][0] == mat[0][1]) {
+                        x = 0; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[0][2] == 'ety' && mat[1][2] != 'ety' && mat[1][2] == mat[2][2]) {
+                        x = 0; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[0][2] == 'ety' && mat[1][1] != 'ety' && mat[1][1] == mat[2][0]) {
+                        x = 0; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } 
+                    // [10]
+                    else if (mat[1][0] == 'ety' && mat[0][0] != 'ety' && mat[0][0] == mat[2][0]) {
+                        x = 1; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[1][0] == 'ety' && mat[1][1] != 'ety' && mat[1][1] == mat[1][2]) {
+                        x = 1; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }
+                    // [11]
+                    else if (mat[1][1] == 'ety' && mat[0][0] != 'ety' && mat[0][0] == mat[2][2]) {
+                        x = 1; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[1][1] == 'ety' && mat[0][2] != 'ety' && mat[0][2] == mat[2][0]) {
+                        x = 1; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[1][1] == 'ety' && mat[0][1] != 'ety' && mat[0][1] == mat[2][1]) {
+                        x = 1; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[1][1] == 'ety' && mat[1][0] != 'ety' && mat[1][0] == mat[1][2]) {
+                        x = 1; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }
+                    // [12]
+                    else if (mat[1][2] == 'ety' && mat[1][0] != 'ety' && mat[1][0] == mat[1][1]) {
+                        x = 1; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[1][2] == 'ety' && mat[0][2] != 'ety' && mat[0][2] == mat[2][2]) {
+                        x = 1; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }
+                    // [20]
+                    else if (mat[2][0] == 'ety' && mat[0][0] != 'ety' && mat[0][0] == mat[1][0]) {
+                        x = 2; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[2][0] == 'ety' && mat[1][1] != 'ety' && mat[1][1] == mat[0][2]) {
+                        x = 2; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[2][0] == 'ety' && mat[2][1] != 'ety' && mat[2][1] == mat[2][2]) {
+                        x = 2; y = 0;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }
+                    // [21]
+                    else if (mat[2][1] == 'ety' && mat[2][0] != 'ety' && mat[2][0] == mat[2][2]) {
+                        x = 2; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[2][1] == 'ety' && mat[0][1] != 'ety' && mat[0][1] == mat[1][1]) {
+                        x = 2; y = 1;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }
+                    // [22]
+                    else if (mat[2][2] == 'ety' && mat[2][0] != 'ety' && mat[2][0] == mat[2][1]) {
+                        x = 2; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[2][2] == 'ety' && mat[0][2] != 'ety' && mat[0][2] == mat[1][2]) {
+                        x = 2; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    } else if (mat[2][2] == 'ety' && mat[0][0] != 'ety' && mat[0][0] == mat[1][1]) {
+                        x = 2; y = 2;
+                        document.getElementById("" + x + "" + y).innerHTML = '<div id="cross"></div>';
+                        mat[x][y] = 'c';
+                    }else{
+                        drawRandom();
+                    }
+                }else{
+                    drawRandom();
+                }
+            }
+
+            function check(){
+                var count=0;
+                if (ety == 0) {
+                    window.alert("Match has draw.");
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                }else if(won()){
+                    win=true;
+                    console.log("won");
+                }else{
+                    for (i = 0; i < 3; i++) {
+                        for (j = 0; j < 3; j++) {
+                            if (mat[i][j] == 'ety') {
+                                count++;
+                            }
+                        }
+                    }
+                    if (chance == 1 && count == 0) {
+                        win = true;
+                        console.log("won");
+                    }
+                    if(chance==0 && count==0){
+                        window.alert("Match has draw.");
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    }
+                }
+            }
+            function won(){
+                var count=0;
+                if (mat[0][2] != 'ety' && mat[0][2] == mat[1][1] && mat[1][1] == mat[2][0]) {
+                    if (mat[0][2] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[0][0] !='ety' && mat[0][0]==mat[1][1] && mat[1][1]==mat[2][2]){
+                    if(mat[0][0]=='z'){
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[0][0] != 'ety' && mat[0][0] == mat[0][1] && mat[0][1] == mat[0][2]){
+                    if (mat[0][0] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[1][0] != 'ety' && mat[1][0] == mat[1][1] && mat[1][1] == mat[1][2]) {
+                    if (mat[1][0] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[2][0] != 'ety' && mat[2][0] == mat[2][1] && mat[2][1] == mat[2][2]) {
+                    if (mat[2][0] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[0][0] != 'ety' && mat[0][0] == mat[1][0] && mat[1][0] == mat[2][0]) {
+                    if (mat[0][0] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[0][1] != 'ety' && mat[0][1] == mat[1][1] && mat[1][1] == mat[2][1]) {
+                    if (mat[0][1] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                } else if (mat[0][2] != 'ety' && mat[0][2] == mat[1][2] && mat[1][2] == mat[2][2]) {
+                    if (mat[0][2] == 'z') {
+                        result = "'O' won";
+                    }
+                    return true;
+                }
+                return false;
+            }
+        </script>
+
+    </body>
+</html>
